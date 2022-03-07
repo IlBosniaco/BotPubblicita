@@ -41,6 +41,7 @@ public class TelegramApi {
     public JSONObject getUpdates() throws IOException, JSONException {
         String temp = "";
         URL url = new URL("https://api.telegram.org/bot" + BotKey + "/getUpdates");
+        
         HttpURLConnection conn = (HttpURLConnection) url.openConnection();
         conn.setRequestMethod("GET");
         conn.connect();
