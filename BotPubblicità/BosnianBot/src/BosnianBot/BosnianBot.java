@@ -31,17 +31,19 @@ public class BosnianBot {
 
         //BufferedReader reader = new BufferedReader(new InputStreamReader(System.in));
         //String text = reader.readLine();
+        /*
         ciao.sendMessage("ciao",960830525);
-        
-        
-        
+        */
+        XMLCoordinate coor = new XMLCoordinate();
+        coor.getXMLToCSV("mariano", 960830525, "matteo");
+        /*
         JSONObject json = ciao.getUpdates();
         JSONArray jArray = json.getJSONArray("result");
 
         for (int i = 0; i < jArray.length(); i++) {
            System.out.println(jArray.getJSONObject(i).getJSONObject("message").get("text").toString());
         }
-        
+        */
 
     }
     

@@ -45,11 +45,10 @@ public class TelegramApi {
         HttpURLConnection conn = (HttpURLConnection) url.openConnection();
         conn.setRequestMethod("GET");
         conn.connect();
-        if (conn.getResponseCode() == 200) {
+        if (conn.getResponseCode() == 200) {//200 indica che la richiesta è andata a buon fine
             Scanner scan = new Scanner(url.openStream());
             while (scan.hasNext()) {
                 temp += scan.nextLine();
-                //parse json here
             }
         }
         JSONObject json = new JSONObject(temp);

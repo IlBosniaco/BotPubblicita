@@ -37,29 +37,20 @@ public class XMLCoordinate {
     private Document document;
     private String fileName="csv/coordinate.csv";
     private String xmlFile="xml/location.xml";
+    public String lat="";
+    public String lon="";
 
     public Document getDocument() {
         return document;
     }
     
-    public void getXMLToCSV(String ricerca, int idChat, String nomeUtente) throws FileNotFoundException, MalformedURLException, IOException{
+    public void getXMLToCSV(String ricerca, int idChat, String nomeUtente) throws IOException{
         
-        BufferedReader in = null;
-        PrintWriter out;       
-        out = new PrintWriter(xmlFile);
-        URL url;
-        String search = "https://nominatim.openstreetmap.org/search?q=" + URLEncoder.encode(ricerca, StandardCharsets.UTF_8)+"&format=xml&polygon_geojson=1&addressdetails=1";
-        url = new URL(search);
-        Scanner scanner = new Scanner(url.openStream());//per leggere tutto file
-        scanner.useDelimiter("\u001a");//indica la fine del file
-        String file = scanner.next();
-        out.write(file);
-        out.close();
-              
-        String lat="";
-        String lon="";
+        getXML(ricerca);
+
+        
         try {
-            getCoordinate(xmlFile, lat, lon);
+            getCoordinate();
         } catch (ParserConfigurationException ex) {
             Logger.getLogger(XMLCoordinate.class.getName()).log(Level.SEVERE, null, ex);
         } catch (SAXException ex) {
@@ -70,7 +61,21 @@ public class XMLCoordinate {
         AddToCSV(testo);
     }
     
-    public void getCoordinate(String filename, String lat, String lon) throws ParserConfigurationException, SAXException, IOException {
+    public void getXML(String ricerca) throws FileNotFoundException, MalformedURLException, IOException{
+        BufferedReader in = null;
+        PrintWriter out;
+        out = new PrintWriter(xmlFile);
+        URL url;
+        String search = "https://nominatim.openstreetmap.org/search?q="+URLEncoder.encode(ricerca, StandardCharsets.UTF_8)+"&format=xml&polygon_geojson=1&addressdetails=1";
+        url = new URL(search);
+        Scanner scanner = new Scanner(url.openStream());//per leggere tutto file
+        scanner.useDelimiter("\u001a");//indica la fine del file
+        String file = scanner.next();
+        out.write(file);
+        out.close();
+    }
+    
+    public void getCoordinate() throws ParserConfigurationException, SAXException, IOException {
         
         DocumentBuilderFactory factory;
         DocumentBuilder builder;
@@ -80,7 +85,7 @@ public class XMLCoordinate {
         factory = DocumentBuilderFactory.newInstance();
         builder = factory.newDocumentBuilder();
         
-        document = builder.parse(filename);
+        document = builder.parse(xmlFile);
         root = document.getDocumentElement();
         nodelist = root.getElementsByTagName("place");
         if (nodelist != null && nodelist.getLength() > 0) {
