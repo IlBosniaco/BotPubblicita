@@ -5,6 +5,7 @@
 package BosnianBot;
 
 import java.io.IOException;
+import java.util.List;
 import java.util.logging.Level;
 import java.util.logging.Logger;
 import org.json.JSONException;
@@ -28,7 +29,8 @@ public class ThreadRicezione extends Thread{
         while(true){
             try {
                 JSONObject json = api.getUpdates();
-                parser.JsonParser(json);
+                List messaggi = parser.JsonParser(json);
+                
             } catch (IOException ex) {
                 Logger.getLogger(ThreadRicezione.class.getName()).log(Level.SEVERE, null, ex);
             } catch (JSONException ex) {
