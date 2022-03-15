@@ -25,7 +25,7 @@ public class Condivisa {
         lastMessageID=id;
     }
     
-    public void AddMesaggi(List<Messaggio> messaggi){
+    public void AddMessaggi(List<Messaggio> messaggi){
         this.messaggi.addAll(messaggi);
     }
     
@@ -40,5 +40,12 @@ public class Condivisa {
     public void setNewerID(int id){
         if(lastMessageID<id)
             lastMessageID=id;
+    }
+    
+    public Messaggio getMessaggio(){
+        if(!messaggi.isEmpty())
+            return messaggi.remove(0);
+        else
+            return new Messaggio();
     }
 }

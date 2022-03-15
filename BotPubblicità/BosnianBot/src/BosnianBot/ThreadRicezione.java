@@ -19,17 +19,27 @@ import telegram.API.*;
 public class ThreadRicezione extends Thread{
     TelegramApi api;
     JsonToMessaggio parser;
+    Condivisa condivisa;
+    int offset;
     
-    public ThreadRicezione(){
-        
+    public ThreadRicezione(Condivisa c){
+        api = new TelegramApi();
+        parser = new JsonToMessaggio();
+        condivisa=c;
+        offset=0;
     }
     
     @Override
     public void run(){
         while(true){
-            try {
-                JSONObject json = api.getUpdates();
-                List messaggi = parser.JsonParser(json);
+            try {                
+                JSONObject json = api.getUpdates(offset);//passo offset
+                List<Messaggio> messaggi = parser.JsonParser(json);
+                if(!messaggi.isEmpty()){//controllo vuoto
+                    //con offset cancello i messaggi precedenti da getUpdates
+                    offset =messaggi.get(messaggi.size()).getMessageID();//prendo il valore di id e lo setto come offset
+                    condivisa.AddMessaggi(messaggi); 
+                }
                 
             } catch (IOException ex) {
                 Logger.getLogger(ThreadRicezione.class.getName()).log(Level.SEVERE, null, ex);
@@ -39,7 +49,7 @@ public class ThreadRicezione extends Thread{
             
                        
             try {
-                Thread.sleep(30000);
+                Thread.sleep(5000);
             } catch (InterruptedException ex) {
                 Logger.getLogger(ThreadRicezione.class.getName()).log(Level.SEVERE, null, ex);
             }

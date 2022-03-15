@@ -7,6 +7,8 @@ package BosnianBot;
 //per importare serve file jar da inserire tra le librerie
 import java.io.IOException;
 import java.net.MalformedURLException;
+import java.util.logging.Level;
+import java.util.logging.Logger;
 import org.json.*;
 import telegram.API.*;
 
@@ -34,17 +36,24 @@ public class BosnianBot {
         /*
         ciao.sendMessage("ciao",960830525);
         */
-        XMLCoordinate coor = new XMLCoordinate();
-        coor.getXMLToCSV("mariano", 960830525, "matteo");
-        /*
-        JSONObject json = ciao.getUpdates();
-        JSONArray jArray = json.getJSONArray("result");
-
-        for (int i = 0; i < jArray.length(); i++) {
-           System.out.println(jArray.getJSONObject(i).getJSONObject("message").get("text").toString());
+        Condivisa c =  new Condivisa();
+        ThreadInvio ti = new ThreadInvio(c);
+        ti.start();
+        try {
+            ti.join();
+        } catch (InterruptedException ex) {
+            Logger.getLogger(BosnianBot.class.getName()).log(Level.SEVERE, null, ex);
         }
-        */
-
+            //XMLCoordinate coor = new XMLCoordinate();
+            //coor.getXMLToCSV("mariano", 960830525, "matteo");
+            /*
+            JSONObject json = ciao.getUpdates();
+            JSONArray jArray = json.getJSONArray("result");
+            
+            for (int i = 0; i < jArray.length(); i++) {
+            System.out.println(jArray.getJSONObject(i).getJSONObject("message").get("text").toString());
+            }
+            */
     }
     
 }
