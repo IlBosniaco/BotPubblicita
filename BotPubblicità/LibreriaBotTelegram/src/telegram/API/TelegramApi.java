@@ -25,9 +25,14 @@ public class TelegramApi {
 
     String BotName = "BosnianBot";
     String BotKey = "5246475403:AAEA525FaiDiwwwUGLOHw4cD36q4kOEw_kU";
-
-    public void Test() {
-        System.out.println("SONO LA LIBRERIA");
+    
+    public TelegramApi(){
+        
+    }
+    
+    public TelegramApi(String name, String key){
+        BotName=name;
+        BotKey=key;
     }
 
     public String getBotName() {

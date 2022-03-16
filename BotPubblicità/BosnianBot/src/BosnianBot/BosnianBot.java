@@ -5,12 +5,8 @@
 package BosnianBot;
 
 //per importare serve file jar da inserire tra le librerie
-import java.io.IOException;
-import java.net.MalformedURLException;
 import java.util.logging.Level;
 import java.util.logging.Logger;
-import org.json.*;
-import telegram.API.*;
 
 /**
  *
@@ -21,7 +17,7 @@ public class BosnianBot {
     /**
      * @param args the command line arguments
      */
-    public static void main(String[] args) throws MalformedURLException, IOException {
+    public static void main(String[] args) {
         // TODO code application logic here
         /*String jsonstring="{mess:'ciao mondo'}";
         JSONObject obj = new JSONObject(jsonstring);
@@ -29,31 +25,29 @@ public class BosnianBot {
         System.out.println(ciao);
         TelegramApi cioooooo =  new TelegramApi();
         cioooooo.Test();*/
-        TelegramApi ciao = new TelegramApi();
 
+        //per leggere da console
         //BufferedReader reader = new BufferedReader(new InputStreamReader(System.in));
         //String text = reader.readLine();
-        /*
-        ciao.sendMessage("ciao",960830525);
-        */
         Condivisa c =  new Condivisa();
         ThreadInvio ti = new ThreadInvio(c);
+        ThreadRicezione tr = new ThreadRicezione(c);
+        
+        tr.start();
         ti.start();
+        
+
+        try {
+            tr.join();
+        } catch (InterruptedException ex) {
+            Logger.getLogger(BosnianBot.class.getName()).log(Level.SEVERE, null, ex);
+        }
+        
         try {
             ti.join();
         } catch (InterruptedException ex) {
             Logger.getLogger(BosnianBot.class.getName()).log(Level.SEVERE, null, ex);
         }
-            //XMLCoordinate coor = new XMLCoordinate();
-            //coor.getXMLToCSV("mariano", 960830525, "matteo");
-            /*
-            JSONObject json = ciao.getUpdates();
-            JSONArray jArray = json.getJSONArray("result");
-            
-            for (int i = 0; i < jArray.length(); i++) {
-            System.out.println(jArray.getJSONObject(i).getJSONObject("message").get("text").toString());
-            }
-            */
     }
     
 }

@@ -23,7 +23,7 @@ public class JsonToMessaggio {
         List<Messaggio> messaggi=new ArrayList<>();
         JSONArray jArray = json.getJSONArray("result");
         for (int i = 0; i < jArray.length(); i++) {
-            int messageID=Integer.parseInt(jArray.getJSONObject(i).getJSONObject("message").get("message_id").toString());
+            int messageID=Integer.parseInt(jArray.getJSONObject(i).get("update_id").toString());
             int chatID=Integer.parseInt(jArray.getJSONObject(i).getJSONObject("message").getJSONObject("chat").get("id").toString());
             String nomeUtente=jArray.getJSONObject(i).getJSONObject("message").getJSONObject("chat").get("first_name").toString();
             String text = jArray.getJSONObject(i).getJSONObject("message").get("text").toString();

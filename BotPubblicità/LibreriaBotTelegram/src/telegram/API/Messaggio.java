@@ -9,31 +9,31 @@ package telegram.API;
  * @author matte
  */
 public class Messaggio {
-    int messageID;
+    int updateID;
     int chatID;
     String nomeUtente;
     String text;
     
     public Messaggio(){
-        messageID=0;
+        updateID=0;
         chatID=0;
         nomeUtente="";
         text="";
     }
     
     public Messaggio(int messageID, int chatID, String nomeUtente, String text){
-        this.messageID=messageID;
+        this.updateID=messageID;
         this.chatID=chatID;
         this.nomeUtente=nomeUtente;
         this.text=text;
     }
 
-    public int getMessageID() {
-        return messageID;
+    public int getUpdateID() {
+        return updateID;
     }
 
-    public void setMessageID(int messageID) {
-        this.messageID = messageID;
+    public void setUpdateID(int updateID) {
+        this.updateID = updateID;
     }
 
     public int getChatID() {

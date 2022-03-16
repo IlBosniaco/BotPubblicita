@@ -21,12 +21,14 @@ public class ThreadRicezione extends Thread{
     JsonToMessaggio parser;
     Condivisa condivisa;
     int offset;
+    boolean first;
     
     public ThreadRicezione(Condivisa c){
         api = new TelegramApi();
         parser = new JsonToMessaggio();
         condivisa=c;
         offset=0;
+        first=true;
     }
     
     @Override
@@ -37,8 +39,9 @@ public class ThreadRicezione extends Thread{
                 List<Messaggio> messaggi = parser.JsonParser(json);
                 if(!messaggi.isEmpty()){//controllo vuoto
                     //con offset cancello i messaggi precedenti da getUpdates
-                    offset =messaggi.get(messaggi.size()).getMessageID();//prendo il valore di id e lo setto come offset
-                    condivisa.AddMessaggi(messaggi); 
+                    offset =messaggi.get(messaggi.size()-1).getUpdateID()+1;//prendo il valore di id e lo setto come offset
+                    if(!first)
+                        condivisa.AddMessaggi(messaggi); 
                 }
                 
             } catch (IOException ex) {
@@ -49,10 +52,16 @@ public class ThreadRicezione extends Thread{
             
                        
             try {
-                Thread.sleep(5000);
+                if(!first)
+                    Thread.sleep(4000);
+                else
+                    Thread.sleep(500);
             } catch (InterruptedException ex) {
                 Logger.getLogger(ThreadRicezione.class.getName()).log(Level.SEVERE, null, ex);
             }
+            
+            if(first)
+                first=false;
         }
     }
 }

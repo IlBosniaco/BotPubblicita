@@ -48,4 +48,11 @@ public class Condivisa {
         else
             return new Messaggio();
     }
+    
+    public boolean hasMessaggio(){
+        if(messaggi.isEmpty())
+            return false;
+        else
+            return true;
+    }
 }
