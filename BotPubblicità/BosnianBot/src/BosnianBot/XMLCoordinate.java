@@ -5,11 +5,11 @@ package BosnianBot;
  * To change this template file, choose Tools | Templates
  * and open the template in the editor.
  */
-
-
 import java.io.BufferedReader;
 import java.io.BufferedWriter;
+import java.io.File;
 import java.io.FileNotFoundException;
+import java.io.FileReader;
 import java.io.FileWriter;
 import java.io.IOException;
 import java.io.PrintWriter;
@@ -17,6 +17,7 @@ import java.net.MalformedURLException;
 import java.net.URL;
 import java.net.URLEncoder;
 import java.nio.charset.StandardCharsets;
+import java.util.List;
 import java.util.Scanner;
 import java.util.logging.Level;
 import java.util.logging.Logger;
@@ -33,23 +34,23 @@ import org.xml.sax.SAXException;
  * @author prof
  */
 public class XMLCoordinate {
-    
+
     private Document document;
-    private String fileName="csv/coordinate.csv";
-    private String xmlFile="xml/location.xml";
-    public String lat="";
-    public String lon="";
+    private String fileName = "csv/coordinate.csv";
+    private String xmlFile = "xml/location.xml";
+    public String lat = "";
+    public String lon = "";
 
     public Document getDocument() {
         return document;
     }
-    
-    public boolean getXMLToCSV(String ricerca, int idChat, String nomeUtente) throws IOException{
-        
+
+    public boolean getXMLToCSV(String ricerca, int idChat, String nomeUtente) throws IOException {
+
         getXML(ricerca);
-        boolean exists=true;
-        String coordinate="";
-        
+        boolean exists = true;
+        String[] coordinate = null;
+
         try {
             coordinate = getCoordinate();
         } catch (ParserConfigurationException ex) {
@@ -57,22 +58,22 @@ public class XMLCoordinate {
         } catch (SAXException ex) {
             Logger.getLogger(XMLCoordinate.class.getName()).log(Level.SEVERE, null, ex);
         }
-        
-        if(!coordinate.equals("")){
-            String testo=coordinate+";"+idChat+";"+nomeUtente;
+
+        if (coordinate[0].equals("") || coordinate[1].equals("") || coordinate == null) {
+            String testo = coordinate[0] + ";" + coordinate[1] + ";" + idChat + ";" + nomeUtente;
             AddToCSV(testo);
-        }else{
-            exists=false;
+        } else {
+            exists = false;
         }
         return exists;
     }
-    
-    public void getXML(String ricerca) throws FileNotFoundException, MalformedURLException, IOException{
+
+    public void getXML(String ricerca) throws FileNotFoundException, MalformedURLException, IOException {
         BufferedReader in = null;
         PrintWriter out;
         out = new PrintWriter(xmlFile);
         URL url;
-        String search = "https://nominatim.openstreetmap.org/search?q="+URLEncoder.encode(ricerca, StandardCharsets.UTF_8)+"&format=xml&polygon_geojson=1&addressdetails=1";
+        String search = "https://nominatim.openstreetmap.org/search?q=" + URLEncoder.encode(ricerca, StandardCharsets.UTF_8) + "&format=xml&polygon_geojson=1&addressdetails=1";
         url = new URL(search);
         Scanner scanner = new Scanner(url.openStream());//per leggere tutto file
         scanner.useDelimiter("\u001a");//indica la fine del file
@@ -80,37 +81,76 @@ public class XMLCoordinate {
         out.write(file);
         out.close();
     }
-    
-    public String getCoordinate() throws ParserConfigurationException, SAXException, IOException {
-        
+
+    public String[] getCoordinate() throws ParserConfigurationException, SAXException, IOException {
+
         DocumentBuilderFactory factory;
         DocumentBuilder builder;
         Element root, element;
         NodeList nodelist;
-        String coordinate="";
+        String[] coordinate = new String[2];
         // creazione dell’albero DOM dal documento XML
         factory = DocumentBuilderFactory.newInstance();
         builder = factory.newDocumentBuilder();
-        
+
         document = builder.parse(xmlFile);
         root = document.getDocumentElement();
         nodelist = root.getElementsByTagName("place");
         if (nodelist != null && nodelist.getLength() > 0) {
             int numNode = nodelist.getLength();
             element = (Element) nodelist.item(0);
-            String lat=element.getAttribute("lat");
-            String lon=element.getAttribute("lon");
-            coordinate = lat+";"+lon;
+            String lat = element.getAttribute("lat");
+            String lon = element.getAttribute("lon");
+            coordinate[0] = lat;
+            coordinate[1] = lon;
         }
-        
+
         return coordinate;
     }
-    
-    public void AddToCSV(String testo) throws IOException{
+
+    public void AddToCSV(String testo) throws IOException {
         FileWriter fw = new FileWriter(fileName, true);
         BufferedWriter bw = new BufferedWriter(fw);
         bw.write(testo);
         bw.newLine();
         bw.close();
+    }
+
+    public float CalcoloDistanzaKM(float lat1, float lat2, float lon1, float lon2) {
+        int R = 6371; // Radius of the earth in km
+        float dLat = deg2rad(lat2 - lat1);  // deg2rad below
+        float dLon = deg2rad(lon2 - lon1);
+        float a
+                = (float) (Math.sin(dLat / 2) * Math.sin(dLat / 2)
+                + Math.cos(deg2rad(lat1)) * Math.cos(deg2rad(lat2))
+                * Math.sin(dLon / 2) * Math.sin(dLon / 2));
+        float c = (float) (2 * Math.atan2(Math.sqrt(a), Math.sqrt(1 - a)));
+        float d = R * c; // Distance in km
+        return d;
+    }
+
+    public float deg2rad(float deg) {
+        return (float) (deg * (Math.PI / 180));
+    }
+    
+    public List<String> getListaCoordinate() throws IOException{
+        List<String> lista = new ArrayList();
+        
+        File f;
+        f = new File("coordinate.csv");
+        Scanner reader = new Scanner(System.in);  // Reading from System.in
+
+        BufferedReader csvReader=null;
+        csvReader = new BufferedReader(new FileReader("coordinate.csv"));
+        
+        String row;
+        while ((row = csvReader.readLine()) != null) {
+            String[] data = row.split(";");
+            Contatto co = new Contatto(data[0], data[1], data[2], data[3]);
+            g.aggiungi(co);
+        }
+        csvReader.close();
+        
+        return lista;
     }
 }
