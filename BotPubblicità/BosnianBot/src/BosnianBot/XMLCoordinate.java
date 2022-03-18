@@ -44,21 +44,27 @@ public class XMLCoordinate {
         return document;
     }
     
-    public void getXMLToCSV(String ricerca, int idChat, String nomeUtente) throws IOException{
+    public boolean getXMLToCSV(String ricerca, int idChat, String nomeUtente) throws IOException{
         
         getXML(ricerca);
-
+        boolean exists=true;
+        String coordinate="";
         
         try {
-            getCoordinate();
+            coordinate = getCoordinate();
         } catch (ParserConfigurationException ex) {
             Logger.getLogger(XMLCoordinate.class.getName()).log(Level.SEVERE, null, ex);
         } catch (SAXException ex) {
             Logger.getLogger(XMLCoordinate.class.getName()).log(Level.SEVERE, null, ex);
         }
         
-        String testo=lat+";"+lon+";"+idChat+";"+nomeUtente;
-        AddToCSV(testo);
+        if(!coordinate.equals("")){
+            String testo=coordinate+";"+idChat+";"+nomeUtente;
+            AddToCSV(testo);
+        }else{
+            exists=false;
+        }
+        return exists;
     }
     
     public void getXML(String ricerca) throws FileNotFoundException, MalformedURLException, IOException{
@@ -75,12 +81,13 @@ public class XMLCoordinate {
         out.close();
     }
     
-    public void getCoordinate() throws ParserConfigurationException, SAXException, IOException {
+    public String getCoordinate() throws ParserConfigurationException, SAXException, IOException {
         
         DocumentBuilderFactory factory;
         DocumentBuilder builder;
         Element root, element;
         NodeList nodelist;
+        String coordinate="";
         // creazione dell’albero DOM dal documento XML
         factory = DocumentBuilderFactory.newInstance();
         builder = factory.newDocumentBuilder();
@@ -91,9 +98,12 @@ public class XMLCoordinate {
         if (nodelist != null && nodelist.getLength() > 0) {
             int numNode = nodelist.getLength();
             element = (Element) nodelist.item(0);
-            lat=element.getAttribute("lat");
-            lon=element.getAttribute("lon");
+            String lat=element.getAttribute("lat");
+            String lon=element.getAttribute("lon");
+            coordinate = lat+";"+lon;
         }
+        
+        return coordinate;
     }
     
     public void AddToCSV(String testo) throws IOException{

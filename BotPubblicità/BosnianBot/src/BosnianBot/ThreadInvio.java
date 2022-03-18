@@ -17,10 +17,12 @@ public class ThreadInvio extends Thread {
 
     TelegramApi api;
     Condivisa condivisa;
+    XMLCoordinate coords;
 
     public ThreadInvio(Condivisa c) {
         api = new TelegramApi();
         condivisa = c;
+        coords=new XMLCoordinate();
     }
 
     @Override
@@ -41,7 +43,16 @@ public class ThreadInvio extends Thread {
                 if (!messaggio.equals("")) {
                     if (messaggio.startsWith("/")) {
                         if (messaggio.toUpperCase().startsWith("/CITTA ")) {
-                            testo = "ok";
+                            String query = messaggio.substring(7);
+                            try {
+                                if(coords.getXMLToCSV(query, mess.getChatID(), mess.getNomeUtente())){
+                                    testo="posizione salvata";
+                                }else{
+                                    testo="posizione non trovata";
+                                }
+                            } catch (IOException ex) {
+                                Logger.getLogger(ThreadInvio.class.getName()).log(Level.SEVERE, null, ex);
+                            }
                         } else {
                             testo = "comando non valido";
                         }
