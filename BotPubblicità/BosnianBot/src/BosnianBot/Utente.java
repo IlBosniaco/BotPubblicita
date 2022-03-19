@@ -14,7 +14,7 @@ public class Utente {
     String nomeUtente;
     
     public Utente(){
-        coor=null;
+        coor=new Coordinate();
         chatID="";
         nomeUtente="";
     }

@@ -17,6 +17,7 @@ import java.net.MalformedURLException;
 import java.net.URL;
 import java.net.URLEncoder;
 import java.nio.charset.StandardCharsets;
+import java.util.ArrayList;
 import java.util.List;
 import java.util.Scanner;
 import java.util.logging.Level;
@@ -49,7 +50,7 @@ public class XMLCoordinate {
 
         getXML(ricerca);
         boolean exists = true;
-        String[] coordinate = null;
+         Coordinate coordinate = new Coordinate();
 
         try {
             coordinate = getCoordinate();
@@ -59,8 +60,8 @@ public class XMLCoordinate {
             Logger.getLogger(XMLCoordinate.class.getName()).log(Level.SEVERE, null, ex);
         }
 
-        if (coordinate[0].equals("") || coordinate[1].equals("") || coordinate == null) {
-            String testo = coordinate[0] + ";" + coordinate[1] + ";" + idChat + ";" + nomeUtente;
+        if (coordinate.getLat()!=0 || coordinate.getLon()!=0) {
+            String testo = coordinate.getLat() + ";" + coordinate.getLon() + ";" + idChat + ";" + nomeUtente;
             AddToCSV(testo);
         } else {
             exists = false;
@@ -82,13 +83,13 @@ public class XMLCoordinate {
         out.close();
     }
 
-    public String[] getCoordinate() throws ParserConfigurationException, SAXException, IOException {
+    public Coordinate getCoordinate() throws ParserConfigurationException, SAXException, IOException {
 
         DocumentBuilderFactory factory;
         DocumentBuilder builder;
         Element root, element;
         NodeList nodelist;
-        String[] coordinate = new String[2];
+        Coordinate cor=null;
         // creazione dell’albero DOM dal documento XML
         factory = DocumentBuilderFactory.newInstance();
         builder = factory.newDocumentBuilder();
@@ -101,11 +102,10 @@ public class XMLCoordinate {
             element = (Element) nodelist.item(0);
             String lat = element.getAttribute("lat");
             String lon = element.getAttribute("lon");
-            coordinate[0] = lat;
-            coordinate[1] = lon;
+            cor=new Coordinate(Float.parseFloat(lat), Float.parseFloat(lon));
         }
 
-        return coordinate;
+        return cor;
     }
 
     public void AddToCSV(String testo) throws IOException {
@@ -133,8 +133,8 @@ public class XMLCoordinate {
         return (float) (deg * (Math.PI / 180));
     }
     
-    public List<String> getListaCoordinate() throws IOException{
-        List<String> lista = new ArrayList();
+    public List<Utente> getListaCoordinate() throws IOException{
+        List<Utente> lista = new ArrayList();
         
         File f;
         f = new File("coordinate.csv");
@@ -146,8 +146,9 @@ public class XMLCoordinate {
         String row;
         while ((row = csvReader.readLine()) != null) {
             String[] data = row.split(";");
-            Contatto co = new Contatto(data[0], data[1], data[2], data[3]);
-            g.aggiungi(co);
+            Coordinate co = new Coordinate(Float.parseFloat(data[0]), Float.parseFloat(data[1]));
+            Utente ut = new Utente(co, data[2], data[3]);
+            lista.add(ut);
         }
         csvReader.close();
         

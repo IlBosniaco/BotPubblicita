@@ -11,6 +11,8 @@ import java.io.FileNotFoundException;
 import java.io.FileReader;
 import java.io.IOException;
 import java.net.MalformedURLException;
+import java.util.ArrayList;
+import java.util.List;
 import java.util.Scanner;
 import java.util.logging.Level;
 import java.util.logging.Logger;
@@ -137,9 +139,10 @@ public class FrameMain extends javax.swing.JFrame {
     private void btnSendMouseClicked(java.awt.event.MouseEvent evt) {//GEN-FIRST:event_btnSendMouseClicked
         // TODO add your handling code here:
         String citta = txtCity.getText();
-        String raggio = txtRadius.getText();
+        int raggio = Integer.parseInt(txtRadius.getText());
         String testo = txtAd.getText();
         XMLCoordinate coor = new XMLCoordinate();
+        Coordinate coordinate = new Coordinate();
 
         try {
             coor.getXML(citta);
@@ -149,7 +152,7 @@ public class FrameMain extends javax.swing.JFrame {
             Logger.getLogger(FrameMain.class.getName()).log(Level.SEVERE, null, ex);
         }
 
-        String[] coordinate = null;
+        
         try {
             coordinate = coor.getCoordinate();
         } catch (ParserConfigurationException ex) {
@@ -160,10 +163,28 @@ public class FrameMain extends javax.swing.JFrame {
             Logger.getLogger(FrameMain.class.getName()).log(Level.SEVERE, null, ex);
         }
 
+        List<Utente> utenti=new ArrayList<>();
+        try {
+            utenti = coor.getListaCoordinate();
+        } catch (IOException ex) {
+            Logger.getLogger(FrameMain.class.getName()).log(Level.SEVERE, null, ex);
+        }
+        
         
 
         float distanza = 0;
-        distanza = coor.CalcoloDistanzaKM(Float.parseFloat(coordinate[0]), Float.parseFloat(coordinate[0]), Float.parseFloat(coordinate[1]), Float.parseFloat(coordinate[0]));
+        
+        for(int i=0; i<utenti.size();i++){
+            float latUtente = utenti.get(i).getCoor().getLat();
+            float lonUtente = utenti.get(i).getCoor().getLon();
+            distanza = coor.CalcoloDistanzaKM(coordinate.getLat(), latUtente, coordinate.getLon(), lonUtente);
+            if(distanza > raggio){
+                utenti.remove(i);
+                i--;
+            }
+        }      
+        
+        
 
     }//GEN-LAST:event_btnSendMouseClicked
 

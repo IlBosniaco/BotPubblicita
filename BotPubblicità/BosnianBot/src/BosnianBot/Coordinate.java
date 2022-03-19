@@ -11,6 +11,11 @@ package BosnianBot;
 public class Coordinate {
     float lat;
     float lon;
+    
+    public Coordinate(){
+        lat=0;
+        lon=0;
+    }
 
     public Coordinate(float lat, float lon) {
         this.lat = lat;
