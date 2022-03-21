@@ -20,7 +20,7 @@ public class ThreadRicezione extends Thread{
     TelegramApi api;
     JsonToMessaggio parser;
     Condivisa condivisa;
-    int offset;
+    int  offset;
     boolean first;
     
     public ThreadRicezione(Condivisa c){
@@ -39,7 +39,7 @@ public class ThreadRicezione extends Thread{
                 List<Messaggio> messaggi = parser.JsonParser(json);
                 if(!messaggi.isEmpty()){//controllo vuoto
                     //con offset cancello i messaggi precedenti da getUpdates
-                    offset =messaggi.get(messaggi.size()-1).getUpdateID()+1;//prendo il valore di id e lo setto come offset
+                    offset =Integer.parseInt(messaggi.get(messaggi.size()-1).getUpdateID())+1;//prendo il valore di id e lo setto come offset
                     if(!first)
                         condivisa.AddMessaggi(messaggi); 
                 }

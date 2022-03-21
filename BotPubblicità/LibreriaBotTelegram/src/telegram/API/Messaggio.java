@@ -9,38 +9,49 @@ package telegram.API;
  * @author matte
  */
 public class Messaggio {
-    int updateID;
-    int chatID;
+    int type;
+    String updateID;
+    String chatID;
     String nomeUtente;
     String text;
     
     public Messaggio(){
-        updateID=0;
-        chatID=0;
+        type=0;
+        updateID="";
+        chatID="";
         nomeUtente="";
         text="";
     }
     
-    public Messaggio(int messageID, int chatID, String nomeUtente, String text){
+    public Messaggio(int type, String messageID, String chatID, String nomeUtente, String text){
+        this.type=type;
         this.updateID=messageID;
         this.chatID=chatID;
         this.nomeUtente=nomeUtente;
         this.text=text;
     }
 
-    public int getUpdateID() {
+    public int getType() {
+        return type;
+    }
+
+    public void setType(int type) {
+        this.type = type;
+    }
+
+    public String getUpdateID() {
         return updateID;
     }
 
-    public void setUpdateID(int updateID) {
+    public void setUpdateID(String updateID) {
         this.updateID = updateID;
     }
 
-    public int getChatID() {
+    public String getChatID() {
         return chatID;
     }
 
-    public void setChatID(int chatID) {
+    public void setChatID(String chatID) {
         this.chatID = chatID;
     }
 

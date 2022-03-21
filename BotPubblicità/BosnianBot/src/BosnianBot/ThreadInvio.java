@@ -22,7 +22,7 @@ public class ThreadInvio extends Thread {
     public ThreadInvio(Condivisa c) {
         api = new TelegramApi();
         condivisa = c;
-        coords=new XMLCoordinate();
+        coords = new XMLCoordinate();
     }
 
     @Override
@@ -40,37 +40,47 @@ public class ThreadInvio extends Thread {
                 String messaggio = mess.getText();
 
                 //controllo
-                if (!messaggio.equals("")) {
-                    if (messaggio.startsWith("/")) {
-                        if (messaggio.toUpperCase().startsWith("/CITTA ")) {
-                            String query = messaggio.substring(7);
-                            try {
-                                if(coords.getXMLToCSV(query, mess.getChatID(), mess.getNomeUtente())){
-                                    testo="posizione salvata";
-                                }else{
-                                    testo="posizione non trovata";
+                if (mess.getType() == 1) {//messaggio di risposta a utente                    
+                    if (!messaggio.equals("")) {
+                        if (messaggio.startsWith("/")) {
+                            if (messaggio.toUpperCase().startsWith("/CITTA ")) {
+                                String query = messaggio.substring(7);
+                                try {
+                                    if (coords.getXMLToCSV(query, mess.getChatID(), mess.getNomeUtente())) {
+                                        testo = "posizione salvata";
+                                    } else {
+                                        testo = "posizione non trovata";
+                                    }
+                                } catch (IOException ex) {
+                                    Logger.getLogger(ThreadInvio.class.getName()).log(Level.SEVERE, null, ex);
                                 }
+                            } else {
+                                testo = "comando non valido";
+                            }
+                        } else {
+                            if (messaggio.equalsIgnoreCase("bosnia")) {
+                                testo = "BOSNIA!";
+                            }
+                        }
+
+                        //invio
+                        if (!testo.equals("")) {
+                            try {
+                                api.sendMessage(testo, mess.getChatID());
                             } catch (IOException ex) {
                                 Logger.getLogger(ThreadInvio.class.getName()).log(Level.SEVERE, null, ex);
                             }
-                        } else {
-                            testo = "comando non valido";
-                        }
-                    } else {
-                        if (messaggio.equalsIgnoreCase("bosnia")) {
-                            testo = "BOSNIA!";
                         }
                     }
-
-                    //invio
-                    if (!testo.equals("")) {
-                        try {
-                            api.sendMessage(testo, mess.getChatID());
-                        } catch (IOException ex) {
-                            Logger.getLogger(ThreadInvio.class.getName()).log(Level.SEVERE, null, ex);
-                        }
+                } else if (mess.getType() == 2) {//messaggi pubblicitari
+                    testo=condivisa.getTestoPubblicita();
+                    try {
+                        api.sendMessage(testo, mess.getChatID());
+                    } catch (IOException ex) {
+                        Logger.getLogger(ThreadInvio.class.getName()).log(Level.SEVERE, null, ex);
                     }
                 }
+
             }
 
         }

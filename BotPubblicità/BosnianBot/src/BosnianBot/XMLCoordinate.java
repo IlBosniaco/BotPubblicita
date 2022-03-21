@@ -39,14 +39,12 @@ public class XMLCoordinate {
     private Document document;
     private String fileName = "csv/coordinate.csv";
     private String xmlFile = "xml/location.xml";
-    public String lat = "";
-    public String lon = "";
 
     public Document getDocument() {
         return document;
     }
 
-    public boolean getXMLToCSV(String ricerca, int idChat, String nomeUtente) throws IOException {
+    public boolean getXMLToCSV(String ricerca, String idChat, String nomeUtente) throws IOException {
 
         getXML(ricerca);
         boolean exists = true;
@@ -116,22 +114,7 @@ public class XMLCoordinate {
         bw.close();
     }
 
-    public float CalcoloDistanzaKM(float lat1, float lat2, float lon1, float lon2) {
-        int R = 6371; // Radius of the earth in km
-        float dLat = deg2rad(lat2 - lat1);  // deg2rad below
-        float dLon = deg2rad(lon2 - lon1);
-        float a
-                = (float) (Math.sin(dLat / 2) * Math.sin(dLat / 2)
-                + Math.cos(deg2rad(lat1)) * Math.cos(deg2rad(lat2))
-                * Math.sin(dLon / 2) * Math.sin(dLon / 2));
-        float c = (float) (2 * Math.atan2(Math.sqrt(a), Math.sqrt(1 - a)));
-        float d = R * c; // Distance in km
-        return d;
-    }
-
-    public float deg2rad(float deg) {
-        return (float) (deg * (Math.PI / 180));
-    }
+    
     
     public List<Utente> getListaCoordinate() throws IOException{
         List<Utente> lista = new ArrayList();
@@ -141,7 +124,7 @@ public class XMLCoordinate {
         Scanner reader = new Scanner(System.in);  // Reading from System.in
 
         BufferedReader csvReader=null;
-        csvReader = new BufferedReader(new FileReader("coordinate.csv"));
+        csvReader = new BufferedReader(new FileReader(fileName));
         
         String row;
         while ((row = csvReader.readLine()) != null) {

@@ -77,7 +77,7 @@ public class TelegramApi {
         return json;
     }
 
-    public void sendMessage(String message, int id) throws MalformedURLException, IOException {
+    public void sendMessage(String message, String id) throws MalformedURLException, IOException {
         URL url = new URL("https://api.telegram.org/bot" + BotKey + "/sendMessage?chat_id=" + id + "&text=" + message);
         URLConnection con = url.openConnection();
         InputStream is = new BufferedInputStream(con.getInputStream());

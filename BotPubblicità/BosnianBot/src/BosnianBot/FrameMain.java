@@ -5,19 +5,15 @@
 package BosnianBot;
 //per importare serve file jar da inserire tra le librerie
 
-import java.io.BufferedReader;
-import java.io.File;
-import java.io.FileNotFoundException;
-import java.io.FileReader;
 import java.io.IOException;
 import java.net.MalformedURLException;
 import java.util.ArrayList;
 import java.util.List;
-import java.util.Scanner;
 import java.util.logging.Level;
 import java.util.logging.Logger;
 import javax.xml.parsers.ParserConfigurationException;
 import org.xml.sax.SAXException;
+import telegram.API.*;
 
 /**
  *
@@ -141,6 +137,7 @@ public class FrameMain extends javax.swing.JFrame {
         String citta = txtCity.getText();
         int raggio = Integer.parseInt(txtRadius.getText());
         String testo = txtAd.getText();
+        CalcoloCoordinate calcolo = new CalcoloCoordinate();
         XMLCoordinate coor = new XMLCoordinate();
         Coordinate coordinate = new Coordinate();
 
@@ -152,7 +149,6 @@ public class FrameMain extends javax.swing.JFrame {
             Logger.getLogger(FrameMain.class.getName()).log(Level.SEVERE, null, ex);
         }
 
-        
         try {
             coordinate = coor.getCoordinate();
         } catch (ParserConfigurationException ex) {
@@ -163,28 +159,51 @@ public class FrameMain extends javax.swing.JFrame {
             Logger.getLogger(FrameMain.class.getName()).log(Level.SEVERE, null, ex);
         }
 
-        List<Utente> utenti=new ArrayList<>();
-        try {
-            utenti = coor.getListaCoordinate();
-        } catch (IOException ex) {
-            Logger.getLogger(FrameMain.class.getName()).log(Level.SEVERE, null, ex);
-        }
-        
-        
-
-        float distanza = 0;
-        
-        for(int i=0; i<utenti.size();i++){
-            float latUtente = utenti.get(i).getCoor().getLat();
-            float lonUtente = utenti.get(i).getCoor().getLon();
-            distanza = coor.CalcoloDistanzaKM(coordinate.getLat(), latUtente, coordinate.getLon(), lonUtente);
-            if(distanza > raggio){
-                utenti.remove(i);
-                i--;
+        if (coordinate.getLon() != 0 && coordinate.getLat() != 0) {
+            //legge gli utenti dal csv
+            List<Utente> utenti = new ArrayList<>();
+            try {
+                utenti = coor.getListaCoordinate();
+            } catch (IOException ex) {
+                Logger.getLogger(FrameMain.class.getName()).log(Level.SEVERE, null, ex);
             }
-        }      
-        
-        
+
+            //salva utenti all'interno del raggio indicato
+            float distanza = 0;
+            for (int i = 0; i < utenti.size(); i++) {
+                float latUtente = utenti.get(i).getCoor().getLat();
+                float lonUtente = utenti.get(i).getCoor().getLon();
+                distanza = calcolo.CalcoloDistanzaKM(coordinate.getLat(), latUtente, coordinate.getLon(), lonUtente);
+                if (distanza > raggio) {
+                    utenti.remove(i);
+                    i--;
+                }
+            }
+
+            //cancella gli utenti doppioni
+            for (int i = 0; i < utenti.size(); i++) {
+                for (int j = i + 1; j < utenti.size(); j++) {
+                    if (utenti.get(i).getChatID().equals(utenti.get(j).getChatID())) {
+                        utenti.remove(j);
+                    }
+                }
+            }
+
+            //creo i messaggi da inviare
+            List<Messaggio> messaggi = new ArrayList();
+            for (int i = 0; i < utenti.size(); i++) {
+                messaggi.add(new Messaggio(2, "", utenti.get(i).getChatID(), utenti.get(i).getNomeUtente(), ""));
+            }
+            c.setTestoPubblicita(testo);
+            c.AddMessaggi(messaggi);
+            
+            txtAd.setText("");
+            txtCity.setText("");
+            txtRadius.setText("");
+        } else {
+            txtCity.setText("non trovato");
+        }
+
 
     }//GEN-LAST:event_btnSendMouseClicked
 

@@ -14,15 +14,18 @@ import telegram.API.*;
 public class Condivisa {
     List<Messaggio> messaggi;
     int lastMessageID;
+    String testoPubblicita;
     
     public Condivisa(){
         messaggi=new ArrayList<Messaggio>();
         lastMessageID=0;
+        testoPubblicita="";
     }
     
-    public Condivisa(List<Messaggio> messaggi, int id){
+    public Condivisa(List<Messaggio> messaggi, int id, String testoPubblicita){
         this.messaggi=messaggi;
         lastMessageID=id;
+        this.testoPubblicita=testoPubblicita;
     }
     
     public void AddMessaggi(List<Messaggio> messaggi){
@@ -55,4 +58,13 @@ public class Condivisa {
         else
             return true;
     }
+
+    public String getTestoPubblicita() {
+        return testoPubblicita;
+    }
+
+    public void setTestoPubblicita(String testoPubblicita) {
+        this.testoPubblicita = testoPubblicita;
+    }
+   
 }
