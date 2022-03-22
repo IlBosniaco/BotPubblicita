@@ -20,9 +20,6 @@ import telegram.API.*;
  * @author matte
  */
 public class FrameMain extends javax.swing.JFrame {
-
-    Condivisa c = new Condivisa();
-
     /**
      * Creates new form NewJFrame
      */
@@ -38,8 +35,8 @@ public class FrameMain extends javax.swing.JFrame {
         //per leggere da console
         //BufferedReader reader = new BufferedReader(new InputStreamReader(System.in));
         //String text = reader.readLine();
-        ThreadInvio ti = new ThreadInvio(c);
-        ThreadRicezione tr = new ThreadRicezione(c);
+        ThreadInvio ti = new ThreadInvio();
+        ThreadRicezione tr = new ThreadRicezione();
 
         tr.start();
         ti.start();
@@ -194,8 +191,8 @@ public class FrameMain extends javax.swing.JFrame {
             for (int i = 0; i < utenti.size(); i++) {
                 messaggi.add(new Messaggio(2, "", utenti.get(i).getChatID(), utenti.get(i).getNomeUtente(), ""));
             }
-            c.setTestoPubblicita(testo);
-            c.AddMessaggi(messaggi);
+            Condivisa.getIstance().setTestoPubblicita(testo);
+            Condivisa.getIstance().AddMessaggi(messaggi);
             
             txtAd.setText("");
             txtCity.setText("");

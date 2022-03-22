@@ -16,12 +16,10 @@ import telegram.API.*;
 public class ThreadInvio extends Thread {
 
     TelegramApi api;
-    Condivisa condivisa;
     XMLCoordinate coords;
 
-    public ThreadInvio(Condivisa c) {
+    public ThreadInvio() {
         api = new TelegramApi();
-        condivisa = c;
         coords = new XMLCoordinate();
     }
 
@@ -34,8 +32,8 @@ public class ThreadInvio extends Thread {
                 Logger.getLogger(ThreadInvio.class.getName()).log(Level.SEVERE, null, ex);
             }
 
-            if (condivisa.hasMessaggio()) {
-                Messaggio mess = condivisa.getMessaggio();
+            if (Condivisa.getIstance().hasMessaggio()) {
+                Messaggio mess = Condivisa.getIstance().getMessaggio();
                 String testo = "";
                 String messaggio = mess.getText();
 
@@ -73,7 +71,7 @@ public class ThreadInvio extends Thread {
                         }
                     }
                 } else if (mess.getType() == 2) {//messaggi pubblicitari
-                    testo=condivisa.getTestoPubblicita();
+                    testo=Condivisa.getIstance().getTestoPubblicita();
                     try {
                         api.sendMessage(testo, mess.getChatID());
                     } catch (IOException ex) {

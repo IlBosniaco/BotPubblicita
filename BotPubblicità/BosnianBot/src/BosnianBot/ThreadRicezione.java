@@ -19,14 +19,12 @@ import telegram.API.*;
 public class ThreadRicezione extends Thread{
     TelegramApi api;
     JsonToMessaggio parser;
-    Condivisa condivisa;
     int  offset;
     boolean first;
     
-    public ThreadRicezione(Condivisa c){
+    public ThreadRicezione(){
         api = new TelegramApi();
         parser = new JsonToMessaggio();
-        condivisa=c;
         offset=0;
         first=true;
     }
@@ -41,7 +39,7 @@ public class ThreadRicezione extends Thread{
                     //con offset cancello i messaggi precedenti da getUpdates
                     offset =Integer.parseInt(messaggi.get(messaggi.size()-1).getUpdateID())+1;//prendo il valore di id e lo setto come offset
                     if(!first)
-                        condivisa.AddMessaggi(messaggi); 
+                        Condivisa.getIstance().AddMessaggi(messaggi); 
                 }
                 
             } catch (IOException ex) {

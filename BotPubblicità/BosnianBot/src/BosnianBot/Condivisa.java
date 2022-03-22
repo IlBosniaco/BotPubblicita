@@ -12,9 +12,10 @@ import telegram.API.*;
  * @author matte
  */
 public class Condivisa {
-    List<Messaggio> messaggi;
-    int lastMessageID;
-    String testoPubblicita;
+    private static Condivisa istance=null;
+    private List<Messaggio> messaggi;
+    private int lastMessageID;
+    private String testoPubblicita;
     
     public Condivisa(){
         messaggi=new ArrayList<Messaggio>();
@@ -28,42 +29,53 @@ public class Condivisa {
         this.testoPubblicita=testoPubblicita;
     }
     
-    public void AddMessaggi(List<Messaggio> messaggi){
+    public static Condivisa getIstance() {
+        if (istance == null) {
+            synchronized (Condivisa.class) {
+                if (istance == null) {
+                    istance = new Condivisa();
+                }
+            }
+        }
+        return istance;
+    }
+    
+    synchronized public void AddMessaggi(List<Messaggio> messaggi){
         this.messaggi.addAll(messaggi);
     }
     
-    public void setID(int id){
+    synchronized public void setID(int id){
         lastMessageID=id;
     }
     
-    public int getID(){
+    synchronized public int getID(){
         return lastMessageID;
     }
     
-    public void setNewerID(int id){
+    synchronized public void setNewerID(int id){
         if(lastMessageID<id)
             lastMessageID=id;
     }
     
-    public Messaggio getMessaggio(){
+    synchronized public Messaggio getMessaggio(){
         if(!messaggi.isEmpty())
             return messaggi.remove(0);
         else
             return new Messaggio();
     }
     
-    public boolean hasMessaggio(){
+    synchronized public boolean hasMessaggio(){
         if(messaggi.isEmpty())
             return false;
         else
             return true;
     }
 
-    public String getTestoPubblicita() {
+    synchronized public String getTestoPubblicita() {
         return testoPubblicita;
     }
 
-    public void setTestoPubblicita(String testoPubblicita) {
+    synchronized public void setTestoPubblicita(String testoPubblicita) {
         this.testoPubblicita = testoPubblicita;
     }
    

@@ -80,7 +80,50 @@ public class XMLCoordinate {
         out.write(file);
         out.close();
     }
+    
+    /*
+        public List parseDocument(String filename) throws ParserConfigurationException, SAXException, IOException {
 
+            DocumentBuilderFactory factory;
+            DocumentBuilder builder;
+            Element root, element;
+            NodeList nodelist;
+            // creazione dell’albero DOM dal documento XML
+            factory = DocumentBuilderFactory.newInstance();
+            builder = factory.newDocumentBuilder();
+
+            document = builder.parse(filename);
+            root = document.getDocumentElement();
+            List<Place> dati = new ArrayList();
+            Place dato;
+            nodelist = root.getElementsByTagName("place");
+            if (nodelist != null && nodelist.getLength() > 0) {
+                int numNode = nodelist.getLength();
+                for (int i = 0; i < numNode; i++) {
+                    element = (Element) nodelist.item(i);
+                    dato = getInfo(element);
+                    dati.add(dato);
+                }
+            }
+            return dati;
+        }
+
+
+        private Place getInfo(Element element) {
+
+            Place posizione = new Place();
+            NodeList children = element.getChildNodes();
+
+            for(int i =0;i<children.getLength();i++){
+                if(children.item(i).getNodeName()!="#text"){
+                    posizione.addNome(children.item(i).getNodeName());
+                    posizione.addValore(children.item(i).getTextContent());
+                }       
+            }
+            return posizione;
+        }
+    */
+    
     public Coordinate getCoordinate() throws ParserConfigurationException, SAXException, IOException {
 
         DocumentBuilderFactory factory;
@@ -137,4 +180,5 @@ public class XMLCoordinate {
         
         return lista;
     }
+    
 }
